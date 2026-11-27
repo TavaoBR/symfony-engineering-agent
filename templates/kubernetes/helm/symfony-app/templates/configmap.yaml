@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "symfony-app.fullname" . }}-config
+  labels:
+    {{- include "symfony-app.labels" . | nindent 4 }}
+data:
+  APP_ENV: {{ .Values.env.APP_ENV | quote }}
+  APP_DEBUG: {{ .Values.env.APP_DEBUG | quote }}
+  DATABASE_URL: {{ .Values.env.DATABASE_URL | quote }}
+  REDIS_URL: {{ .Values.env.REDIS_URL | quote }}
+  MESSENGER_TRANSPORT_DSN: {{ .Values.env.MESSENGER_TRANSPORT_DSN | quote }}

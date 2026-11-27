@@ -1,0 +1,16 @@
+apiVersion: v2
+name: symfony-app
+description: Production-grade cloud-native Helm chart for Symfony 6.4 LTS / 7.x+ applications with FrankenPHP, HPA, and asynchronous Messenger workers.
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - symfony
+  - php
+  - frankenphp
+  - cloud-native
+  - hpa
+  - kubernetes
+maintainers:
+  - name: Symfony Engineering Agent
+    email: engineering@symfony-agent.local

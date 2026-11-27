@@ -1,0 +1,160 @@
+# ==============================================================================
+# Symfony Engineering Agent — Helm Values Specification
+# Production-ready defaults for Symfony 6.4/7+ on Kubernetes
+# ==============================================================================
+
+# Global application deployment parameters
+replicaCount: 2
+
+image:
+  repository: ghcr.io/my-org/symfony-app
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Pod Security Context (OWASP Container Hardening & CIS Benchmarks)
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 33 # www-data
+  runAsGroup: 33
+  fsGroup: 33
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# Application Environment Variables
+env:
+  APP_ENV: prod
+  APP_DEBUG: "0"
+  DATABASE_URL: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_NAME)?serverVersion=16&charset=utf8"
+  REDIS_URL: "redis://redis-master:6379"
+  MESSENGER_TRANSPORT_DSN: "redis://redis-master:6379/messages"
+
+# Secret references loaded into environment
+secrets:
+  appSecret: "ChangeMeInProduction32BytesSecretKey123"
+  dbUser: "symfony_user"
+  dbPassword: "symfony_secure_password"
+  dbHost: "postgres-cluster"
+  dbName: "symfony_prod"
+
+# Web Service Definition (FrankenPHP)
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+# Ingress Configuration (HTTP/2 & HTTP/3)
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "32m"
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: symfony-app-tls
+      hosts:
+        - app.example.com
+
+# Compute Resource Quotas & Allocation
+resources:
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+# Automated Horizontal Pod Autoscaling (HPA)
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 80
+
+# High Availability Pod Disruption Budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Healthcheck & Readiness Probes
+probes:
+  liveness:
+    httpGet:
+      path: /up
+      port: 80
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+  readiness:
+    httpGet:
+      path: /up
+      port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 2
+  startup:
+    httpGet:
+      path: /up
+      port: 80
+    failureThreshold: 30
+    periodSeconds: 2
+
+# Asynchronous Background Worker Deployment (Symfony Messenger)
+worker:
+  enabled: true
+  replicaCount: 2
+  command:
+    - "php"
+    - "bin/console"
+    - "messenger:consume"
+    - "async"
+    - "--time-limit=3600"
+    - "--memory-limit=128M"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 80
+
+# Database Migration Pre-Upgrade / Post-Install Hook Job
+migrations:
+  enabled: true
+  command:
+    - "php"
+    - "bin/console"
+    - "doctrine:migrations:migrate"
+    - "--no-interaction"
+    - "--allow-no-migration"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

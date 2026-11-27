@@ -1,0 +1,44 @@
+{{- if .Values.worker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "symfony-app.fullname" . }}-worker
+  labels:
+    {{- include "symfony-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: messenger-worker
+spec:
+  {{- if not .Values.worker.autoscaling.enabled }}
+  replicas: {{ .Values.worker.replicaCount }}
+  {{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      {{- include "symfony-app.workerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "symfony-app.workerSelectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: messenger-worker
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-worker
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            {{- toYaml .Values.worker.command | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "symfony-app.fullname" . }}-config
+            - secretRef:
+                name: {{ include "symfony-app.fullname" . }}-secret
+          resources:
+            {{- toYaml .Values.worker.resources | nindent 12 }}
+{{- end }}

@@ -1,0 +1,40 @@
+{{- if .Values.migrations.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "symfony-app.fullname" . }}-migration-{{ randAlphaNum 5 | lower }}
+  labels:
+    {{- include "symfony-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database-migration
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        {{- include "symfony-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: database-migration
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: migration
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            {{- toYaml .Values.migrations.command | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "symfony-app.fullname" . }}-config
+            - secretRef:
+                name: {{ include "symfony-app.fullname" . }}-secret
+          resources:
+            {{- toYaml .Values.migrations.resources | nindent 12 }}
+{{- end }}
