@@ -16,11 +16,63 @@ env:
 
 jobs:
   # ============================================================================
-  # Gate 1: Code Linting, Config Syntax & Container Integrity
+  # Gate 0: Agent Ecosystem & Template Integrity
+  # Always runs across agent ecosystem repos and downstream projects
+  # ============================================================================
+  ecosystem-integrity:
+    name: "Agent Ecosystem Integrity & Contracts"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Validate PHP Syntax in Templates
+        run: |
+          find templates -name "*.php" -exec php -l {} \;
+
+      - name: Validate OpenAPI 3.1 Contract Specification
+        run: |
+          php templates/contracts/openapi-validator.php templates/contracts/openapi.json.dist --strict
+
+      - name: Test CLI Benchmark Runner Help
+        run: |
+          php templates/benchmarks/benchmark-runner.php --help
+
+      - name: Test CLI Contract Validator Help
+        run: |
+          php templates/contracts/openapi-validator.php --help
+
+      - name: Validate Plugin Manifest JSON
+        run: |
+          jq empty plugin.json
+
+      - name: Validate Shell Installer Syntax
+        run: |
+          bash -n install.sh
+
+      - name: Verify All 20 Agents and 20 Base Skills
+        run: |
+          AGENT_COUNT=$(ls -1 agents/*.md | wc -l)
+          SKILL_COUNT=$(ls -d skills/*/ | wc -l)
+          echo "Verified ${AGENT_COUNT} agent files and ${SKILL_COUNT} skills."
+          if [ "${AGENT_COUNT}" -lt 20 ]; then
+            echo "Error: Expected at least 20 agents, found ${AGENT_COUNT}"
+            exit 1
+          fi
+
+  # ============================================================================
+  # Gate 1: Lint & Container Integrity (Runs on Symfony Applications)
   # ============================================================================
   lint-and-container:
     name: "Lint & Container Integrity"
     runs-on: ubuntu-latest
+    if: hashFiles('composer.json') != ''
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -60,11 +112,12 @@ jobs:
           fi
 
   # ============================================================================
-  # Gate 2: Security & Dependency Vulnerability Audit
+  # Gate 2: Security Vulnerability Audit (Runs on Symfony Applications)
   # ============================================================================
   security-audit:
     name: "Security Audit (OWASP / CVEs)"
     runs-on: ubuntu-latest
+    if: hashFiles('composer.json') != ''
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -79,11 +132,12 @@ jobs:
         run: composer audit
 
   # ============================================================================
-  # Gate 3: Static Analysis (PHPStan Level 8+)
+  # Gate 3: Static Analysis (Runs on Symfony Applications)
   # ============================================================================
   static-analysis:
     name: "PHPStan Static Analysis (Level 8+)"
     runs-on: ubuntu-latest
+    if: hashFiles('composer.json') != ''
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -116,11 +170,12 @@ jobs:
           fi
 
   # ============================================================================
-  # Gate 4: Database Schema, Migrations & Automated Tests (PHPUnit)
+  # Gate 4 & 5: Database Schema & Automated Tests (Runs on Symfony Applications)
   # ============================================================================
   database-and-tests:
     name: "Database Schema & PHPUnit Tests"
     runs-on: ubuntu-latest
+    if: hashFiles('composer.json') != ''
 
     services:
       postgres:
