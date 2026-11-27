@@ -1,0 +1,64 @@
+# ==============================================================================
+# Symfony Engineering Agent — OpenTelemetry (OTel) Configuration
+# Distributed Tracing & W3C Trace Context Propagation
+# ==============================================================================
+
+# OpenTelemetry PHP SDK Configuration for Symfony 6.4/7+
+# Place under: config/packages/otel.yaml
+
+otel:
+  service:
+    name: '%env(default:symfony-app:OTEL_SERVICE_NAME)%'
+    version: '%env(default:1.0.0:APP_VERSION)%'
+    namespace: 'ecommerce'
+    environment: '%env(APP_ENV)%'
+
+  # Resource Attributes attached to all spans
+  resource:
+    attributes:
+      service.name: '%env(default:symfony-app:OTEL_SERVICE_NAME)%'
+      service.version: '%env(default:1.0.0:APP_VERSION)%'
+      deployment.environment: '%env(APP_ENV)%'
+      telemetry.sdk.language: 'php'
+      telemetry.sdk.name: 'opentelemetry'
+      host.name: '%env(default:localhost:HOSTNAME)%'
+
+  # Distributed Tracing Configuration
+  tracing:
+    enabled: true
+    # Sampler: ParentBased(TraceIdRatioBased) ensures 100% downstream tracing if parent sampled
+    sampler:
+      type: 'parent_based'
+      ratio: '%env(default:1.0:OTEL_TRACES_SAMPLER_RATIO)%'
+
+    # Exporter: OTLP via HTTP or gRPC to OpenTelemetry Collector
+    exporter:
+      type: 'otlp'
+      endpoint: '%env(default:http://otel-collector:4318/v1/traces:OTEL_EXPORTER_OTLP_ENDPOINT)%'
+      protocol: 'http/protobuf' # or 'grpc'
+      timeout: 3000 # milliseconds
+
+    # Auto-Instrumentation Integration Spans
+    instrumentation:
+      # HTTP Request / Response lifecycle tracing
+      http:
+        enabled: true
+        capture_headers:
+          request: ['user-agent', 'x-request-id', 'traceparent']
+          response: ['content-type', 'x-ratelimit-remaining']
+
+      # Doctrine DBAL SQL Query execution spans
+      doctrine:
+        enabled: true
+        capture_sql: true # Automatically sanitizes SQL parameters to prevent secret leakage
+        statement_max_length: 2048
+
+      # Symfony Messenger asynchronous message dispatch & consume spans
+      messenger:
+        enabled: true
+        propagate_context: true # Injects W3C Traceparent into Messenger stamp headers
+
+      # Symfony HttpClient remote API request spans
+      http_client:
+        enabled: true
+        propagate_context: true

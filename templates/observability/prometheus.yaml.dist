@@ -1,0 +1,73 @@
+# ==============================================================================
+# Symfony Engineering Agent — Prometheus Metrics Specification
+# Metrics Exporter & Scraper Configuration for Symfony 6.4/7+
+# ==============================================================================
+
+# Place under: config/packages/prometheus.yaml or Prometheus Scraper targets
+
+prometheus:
+  enabled: true
+  namespace: 'symfony'
+  endpoint: '/metrics'
+  storage_adapter: 'redis' # Options: 'apcu', 'redis', 'in_memory'
+  redis_dsn: '%env(default:redis://redis:6379:REDIS_URL)%'
+
+  # Metrics Definitions & Buckets
+  metrics:
+    # --------------------------------------------------------------------------
+    # 1. HTTP RED Metrics (Rate, Errors, Duration)
+    # --------------------------------------------------------------------------
+    http_requests_total:
+      type: counter
+      help: 'Total count of processed HTTP requests by route, method, and HTTP status code.'
+      labels: ['route', 'method', 'status_code']
+
+    http_request_duration_seconds:
+      type: histogram
+      help: 'HTTP request execution latency distribution in seconds.'
+      labels: ['route', 'method']
+      buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0]
+
+    # --------------------------------------------------------------------------
+    # 2. Database & Doctrine Query Metrics
+    # --------------------------------------------------------------------------
+    database_queries_total:
+      type: counter
+      help: 'Total count of database queries executed via Doctrine DBAL.'
+      labels: ['entity', 'operation'] # e.g. 'Order', 'SELECT'
+
+    database_query_duration_seconds:
+      type: histogram
+      help: 'Database query execution time in seconds.'
+      labels: ['operation']
+      buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5]
+
+    # --------------------------------------------------------------------------
+    # 3. Asynchronous Messenger Queue Metrics
+    # --------------------------------------------------------------------------
+    messenger_messages_total:
+      type: counter
+      help: 'Total count of messages dispatched and processed via Symfony Messenger.'
+      labels: ['transport', 'message_class', 'status'] # status: 'success', 'failed', 'retried'
+
+    messenger_processing_duration_seconds:
+      type: histogram
+      help: 'Time spent executing messenger message handlers.'
+      labels: ['message_class']
+      buckets: [0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 15.0, 30.0, 60.0]
+
+    messenger_queue_size:
+      type: gauge
+      help: 'Current backlog size of pending messages per transport queue.'
+      labels: ['transport']
+
+    # --------------------------------------------------------------------------
+    # 4. PHP Runtime & OPcache Metrics
+    # --------------------------------------------------------------------------
+    memory_peak_bytes:
+      type: gauge
+      help: 'Peak memory allocated by PHP engine during request execution in bytes.'
+
+    opcache_hit_ratio:
+      type: gauge
+      help: 'OPcache shared memory cache hit ratio percentage.'
