@@ -98,9 +98,10 @@ if (-not [string]::IsNullOrEmpty($TargetProject)) {
     Write-Host "  -> Successfully configured target project!" -ForegroundColor Green
 }
 
-Write-Host "`n==========================================================" -ForegroundColor Cyan
-Write-Host "  Installation Completed Successfully!" -ForegroundColor Green
-Write-Host "  Available slash commands in your AI chat:" -ForegroundColor White
+Write-Host ''
+Write-Host '==========================================================' -ForegroundColor Cyan
+Write-Host '  Installation Completed Successfully!' -ForegroundColor Green
+Write-Host '  Available slash commands in your AI chat:' -ForegroundColor White
 Write-Host '   /symfony      - Orchestrator (Full task delivery)' -ForegroundColor Gray
 Write-Host '   /architecture - Symfony Architect (DTOs, clean architecture)' -ForegroundColor Gray
 Write-Host '   /backend      - Backend Developer (Controllers, services)' -ForegroundColor Gray

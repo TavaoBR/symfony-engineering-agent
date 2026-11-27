@@ -765,7 +765,8 @@ To enforce these quality gates automatically on every Pull Request, the reposito
 - [x] **v2.4:** Automated latency and memory profiling integration with Symfony Profiler benchmarks (see [docs/PROFILER_BENCHMARKS.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/PROFILER_BENCHMARKS.md) and `templates/benchmarks/`).
 - [x] **v2.5:** Automated OpenAPI/Swagger contract generation and schema regression test harnesses (see [docs/OPENAPI_CONTRACT_TESTING.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/OPENAPI_CONTRACT_TESTING.md) and `templates/contracts/`).
 - [x] **v2.6:** Mutation testing integration with Infection PHP and automated architectural boundary enforcement with Deptrac (see [docs/MUTATION_TESTING.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/MUTATION_TESTING.md), [docs/ARCHITECTURAL_BOUNDARIES.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/ARCHITECTURAL_BOUNDARIES.md), `templates/testing/`, and `templates/architecture/`).
-- [ ] **v2.7 (Upcoming):** Automated load and stress testing harnesses with k6 and asynchronous worker scaling verification (Symfony Messenger).
+- [x] **v2.7:** Automated load and stress testing harnesses with k6 and asynchronous worker scaling verification with Symfony Messenger (see [docs/LOAD_AND_STRESS_TESTING.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/LOAD_AND_STRESS_TESTING.md), [docs/ASYNC_MESSENGER_SCALING.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/ASYNC_MESSENGER_SCALING.md), `templates/load-testing/`, and `templates/messenger/`).
+- [ ] **v2.8 (Upcoming):** Static Application Security Testing (SAST) with Semgrep and automated OWASP dependency CVE remediation workflows.
 
 ---
 

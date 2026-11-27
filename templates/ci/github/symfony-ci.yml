@@ -58,6 +58,14 @@ jobs:
         run: |
           php templates/architecture/architecture-validator.php --help
 
+      - name: Test CLI Load Testing Runner Help
+        run: |
+          php templates/load-testing/k6-runner.php --help
+
+      - name: Verify Symfony Messenger Architecture
+        run: |
+          php templates/messenger/messenger-worker-verifier.php --strict
+
       - name: Validate Plugin Manifest JSON
         run: |
           jq empty plugin.json

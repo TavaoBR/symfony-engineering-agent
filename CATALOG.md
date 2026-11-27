@@ -95,3 +95,14 @@
 - `templates/architecture/architecture-validator.php` — Standalone CLI validator running official Deptrac or built-in static layer boundary scanner.
 - `docs/MUTATION_TESTING.md` — Comprehensive mutation testing and test efficacy guide with Infection PHP.
 - `docs/ARCHITECTURAL_BOUNDARIES.md` — Comprehensive architectural boundary enforcement manual with Deptrac.
+
+---
+
+## Load Testing & Asynchronous Messenger Scaling Templates
+
+- `templates/load-testing/k6-load-test.js` — Reference k6 load and stress testing script with baseline and spike traffic scenarios and SLA threshold assertions.
+- `templates/load-testing/k6-runner.php` — Standalone CLI runner executing k6 or concurrent curl_multi load testing engine, evaluating P95/P99 latency and error rates.
+- `templates/messenger/messenger.yaml.dist` — Production-grade Symfony Messenger configuration template featuring tiered transports, exponential backoff, and dead-letter queue (DLQ).
+- `templates/messenger/messenger-worker-verifier.php` — Standalone CLI verifier auditing queue routing, retry policies, and worker health.
+- `docs/LOAD_AND_STRESS_TESTING.md` — Comprehensive load and stress testing manual with k6 and concurrency tuning.
+- `docs/ASYNC_MESSENGER_SCALING.md` — Comprehensive asynchronous worker scaling and queue verification manual with Symfony Messenger.
