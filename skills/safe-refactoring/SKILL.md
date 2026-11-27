@@ -134,6 +134,11 @@ final readonly class CommissionCalculator
   ```bash
   php bin/phpunit
   ```
+- Run knowledge graph blast-radius refactoring impact analysis:
+  ```bash
+  php templates/rag/semantic-indexer.php --strict
+  php templates/rag/rag-query.php --query "OrderRepository" --blast-radius --strict
+  ```
 - Run Rector in dry-run mode to inspect diffs:
   ```bash
   ./vendor/bin/rector process --dry-run
@@ -145,6 +150,7 @@ final readonly class CommissionCalculator
 
 ## 10. Error Handling and Exceptions
 - Refactoring must preserve exception types and error messages thrown to callers.
+- Refer to [docs/SEMANTIC_MEMORY_AND_KNOWLEDGE_GRAPH_RAG.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/SEMANTIC_MEMORY_AND_KNOWLEDGE_GRAPH_RAG.md) and [workflows/knowledge-graph-codebase-navigation.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/workflows/knowledge-graph-codebase-navigation.md) for architectural blast-radius assessment before modifying core domain services.
 
 ## 11. Objective Quality and Completion Criteria
 - 100% of unit and functional tests pass green.

@@ -180,3 +180,13 @@
 - `templates/swarm/self-healing-gate.php` — Autonomous self-healing CI gate harness automatically triaging gate failures, delegating fixes to responsible agents, and re-verifying patches.
 - `workflows/swarm-orchestration-self-healing.md` — 5-phase operational workflow coordinating task sharding, worktree isolation, peer review, self-healing CI, and release synthesis.
 - `docs/SWARM_ORCHESTRATION_AND_SELF_HEALING.md` — Major version 3.0 master manual for multi-agent swarm architecture, task sharding, and self-healing CI gates.
+
+---
+
+## Semantic Vector Memory & Knowledge Graph RAG Templates
+
+- `templates/rag/knowledge-graph.json.dist` — Standalone local codebase knowledge graph schema and seed ontology mapping Symfony architectural nodes (Entity, Controller, Service, Repository, Voter, Message, MessageHandler) and typed relationships (`INJECTS`, `ROUTES_TO`, `QUERIES`, `PROTECTS`, `DISPATCHES`, `HANDLES`, `RELATES_TO`).
+- `templates/rag/semantic-indexer.php` — Standalone CLI AST parser and semantic vector embedding generator for Symfony codebases, detecting legacy docblock annotations (`@Route`, `@ORM\`) alongside modern PHP 8.2+ attributes.
+- `templates/rag/rag-query.php` — Standalone CLI semantic retrieval and transitive blast-radius refactoring impact analyzer computing Degree 1 (direct) and Degree 2 (transitive) dependents.
+- `workflows/knowledge-graph-codebase-navigation.md` — 5-phase operational workflow coordinating semantic indexing, graph ontology assembly, vector RAG retrieval, characterization testing, and safe refactoring signoff.
+- `docs/SEMANTIC_MEMORY_AND_KNOWLEDGE_GRAPH_RAG.md` — Comprehensive technical manual for local knowledge graph RAG, vector memory indexing, blast-radius refactoring impact analysis, and legacy codebase navigation.
