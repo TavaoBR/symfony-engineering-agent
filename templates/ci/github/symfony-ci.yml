@@ -22,6 +22,8 @@ jobs:
   ecosystem-integrity:
     name: "Agent Ecosystem Integrity & Contracts"
     runs-on: ubuntu-latest
+    outputs:
+      has_composer: ${{ steps.check_composer.outputs.has_composer }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -66,13 +68,23 @@ jobs:
             exit 1
           fi
 
+      - id: check_composer
+        name: Check For Symfony Application Composer Configuration
+        run: |
+          if [ -f "composer.json" ]; then
+            echo "has_composer=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_composer=false" >> "$GITHUB_OUTPUT"
+          fi
+
   # ============================================================================
   # Gate 1: Lint & Container Integrity (Runs on Symfony Applications)
   # ============================================================================
   lint-and-container:
     name: "Lint & Container Integrity"
     runs-on: ubuntu-latest
-    if: hashFiles('composer.json') != ''
+    needs: ecosystem-integrity
+    if: needs.ecosystem-integrity.outputs.has_composer == 'true'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -117,7 +129,8 @@ jobs:
   security-audit:
     name: "Security Audit (OWASP / CVEs)"
     runs-on: ubuntu-latest
-    if: hashFiles('composer.json') != ''
+    needs: ecosystem-integrity
+    if: needs.ecosystem-integrity.outputs.has_composer == 'true'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -137,7 +150,8 @@ jobs:
   static-analysis:
     name: "PHPStan Static Analysis (Level 8+)"
     runs-on: ubuntu-latest
-    if: hashFiles('composer.json') != ''
+    needs: ecosystem-integrity
+    if: needs.ecosystem-integrity.outputs.has_composer == 'true'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -175,7 +189,8 @@ jobs:
   database-and-tests:
     name: "Database Schema & PHPUnit Tests"
     runs-on: ubuntu-latest
-    if: hashFiles('composer.json') != ''
+    needs: ecosystem-integrity
+    if: needs.ecosystem-integrity.outputs.has_composer == 'true'
 
     services:
       postgres:
