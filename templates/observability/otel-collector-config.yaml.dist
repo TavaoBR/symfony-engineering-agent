@@ -1,0 +1,76 @@
+# ==============================================================================
+# Symfony Engineering Agent — OpenTelemetry Collector Pipeline Configuration
+# Ingests OTLP traces & Prometheus metrics from Symfony containers
+# ==============================================================================
+
+receivers:
+  # OTLP Ingestion Receiver (gRPC & HTTP)
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+  # Prometheus Scraper for Symfony application endpoint
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'symfony-app'
+          scrape_interval: 10s
+          static_configs:
+            - targets: ['app:80']
+          metrics_path: '/metrics'
+
+processors:
+  # Memory Limiter ensures the collector drops or throttles under extreme load
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 20
+
+  # Batch processor groups telemetry into efficient network batches
+  batch:
+    send_batch_size: 1024
+    timeout: 1s
+    send_batch_max_size: 2048
+
+  # Resource Processor normalizes service attributes
+  resource:
+    attributes:
+      - key: service.namespace
+        value: "symfony-ecosystem"
+        action: insert
+
+exporters:
+  # Prometheus metrics export endpoint for scraping by central Prometheus server
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    namespace: "symfony"
+    send_timestamps: true
+
+  # OTLP exporter to send traces to Jaeger, Grafana Tempo, or Signoz
+  otlp:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+
+  # Logging exporter for local troubleshooting & debug
+  debug:
+    verbosity: basic
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resource]
+      exporters: [otlp, debug]
+
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [memory_limiter, batch, resource]
+      exporters: [prometheus, debug]
+
+  telemetry:
+    logs:
+      level: info
