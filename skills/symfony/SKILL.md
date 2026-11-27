@@ -15,4 +15,11 @@ Coordinate the full engineering lifecycle for the user's request:
 4. Execute local validations (`php bin/console lint:container`, `vendor/bin/phpstan analyse`, `php bin/phpunit`).
 5. Present the verified delivery report with execution logs.
 
+## Autonomous Swarm Mode & Self-Healing CI (v3.0)
+For large-scale or multi-module epics, the Orchestrator initiates autonomous swarm mode (`templates/swarm/swarm-topology.yaml.dist`):
+1. **Dynamic Task Sharding:** Splits epics into a DAG of domain-driven or layer-driven slices (`php templates/swarm/swarm-runner.php`).
+2. **Parallel Subagent Execution:** Dispatches concurrent specialist agents in isolated Git worktrees.
+3. **Autonomous Self-Healing Loop:** Automatically catches failing quality gates and delegates atomic patches via `php templates/swarm/self-healing-gate.php`.
+4. **Reference Manual:** See `docs/SWARM_ORCHESTRATION_AND_SELF_HEALING.md` and `workflows/swarm-orchestration-self-healing.md`.
+
 $ARGUMENTS

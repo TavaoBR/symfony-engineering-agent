@@ -170,3 +170,13 @@
 - `templates/disaster-recovery/dr-validator.php` — Standalone CLI validator auditing DR policies, RTO/RPO limits, Doctrine primary-replica pooling, and backup verification scripts.
 - `workflows/disaster-recovery-failover.md` — 5-phase operational workflow coordinating DR policy definition, read/write splitting, restoration drills, failover simulation, and signoff.
 - `docs/DISASTER_RECOVERY_AND_FAILOVER.md` — Comprehensive enterprise manual for Disaster Recovery, multi-region replication, and automated backup integrity testing.
+
+---
+
+## Multi-Agent Swarm Orchestration & Self-Healing Templates
+
+- `templates/swarm/swarm-topology.yaml.dist` — Enterprise multi-agent swarm topology specification defining master coordinator, 5 specialist clusters (20 agents), task sharding protocols, and event bus state transitions.
+- `templates/swarm/swarm-runner.php` — Standalone CLI swarm orchestration engine executing dynamic task sharding, parallel worker dispatch, and deliverable synthesis.
+- `templates/swarm/self-healing-gate.php` — Autonomous self-healing CI gate harness automatically triaging gate failures, delegating fixes to responsible agents, and re-verifying patches.
+- `workflows/swarm-orchestration-self-healing.md` — 5-phase operational workflow coordinating task sharding, worktree isolation, peer review, self-healing CI, and release synthesis.
+- `docs/SWARM_ORCHESTRATION_AND_SELF_HEALING.md` — Major version 3.0 master manual for multi-agent swarm architecture, task sharding, and self-healing CI gates.
