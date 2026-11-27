@@ -1,0 +1,42 @@
+framework:
+  messenger:
+    failure_transport: failed
+
+    transports:
+      # High priority transport for time-sensitive jobs (e.g. transactional auth, payments)
+      async_priority_high:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%?queue_name=high'
+        options:
+          auto_setup: true
+        retry_strategy:
+          max_retries: 5
+          delay: 500
+          multiplier: 2
+          max_delay: 5000
+
+      # Standard asynchronous background task transport (e.g. emails, reports, indexing)
+      async_default:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%?queue_name=default'
+        options:
+          auto_setup: true
+        retry_strategy:
+          max_retries: 3
+          delay: 1000
+          multiplier: 2
+          max_delay: 10000
+
+      # Dead Letter Queue (DLQ) for failed/poison messages
+      failed:
+        dsn: 'doctrine://default?queue_name=failed'
+
+    routing:
+      # Route high-priority domain commands
+      'App\Message\HighPriorityMessageInterface': async_priority_high
+
+      # Route standard async events and background jobs
+      'App\Message\AsyncMessageInterface': async_default
+
+      # Decouple Symfony Mailer and Notifier notifications
+      'Symfony\Component\Mailer\Messenger\SendEmailMessage': async_default
+      'Symfony\Component\Notifier\Message\ChatMessage': async_default
+      'Symfony\Component\Notifier\Message\SmsMessage': async_default

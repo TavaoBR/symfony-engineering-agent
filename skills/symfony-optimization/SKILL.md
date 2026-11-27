@@ -119,8 +119,17 @@ final readonly class OrderCreatedHandler
 
 ## 10. Error Handling and Exceptions
 - Configure `retry_strategy` in Messenger with exponential backoff before sending failed messages to the dead-letter queue (`failed`).
+- Audit Messenger architecture and prevent synchronous bottlenecks:
+  ```bash
+  php templates/messenger/messenger-worker-verifier.php --strict
+  ```
+- Validate high-concurrency load and throughput limits:
+  ```bash
+  php templates/load-testing/k6-runner.php --vus=20 --duration=30s --max-p95=200
+  ```
 
 ## 11. Objective Quality and Completion Criteria
 - Zero blocking network calls executed synchronously in HTTP controllers.
 - 100% of services compiled as private in the container.
+- Dead letter queue (DLQ) verified and active via `messenger-worker-verifier.php`.
 - Tag-based caching active with defined expiration policies.
