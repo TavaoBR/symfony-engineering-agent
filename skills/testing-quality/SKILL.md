@@ -132,6 +132,10 @@ final class CreateUserControllerTest extends WebTestCase
   ```bash
   php bin/phpunit --testdox
   ```
+- Run mutation testing (Infection PHP):
+  ```bash
+  php templates/testing/mutation-runner.php --diff-only --min-msi=70.0
+  ```
 - Run static analysis:
   ```bash
   ./vendor/bin/phpstan analyse -l 8 src tests
@@ -146,5 +150,6 @@ final class CreateUserControllerTest extends WebTestCase
 
 ## 11. Objective Quality and Completion Criteria
 - Automated test suites passing 100% (zero failures, zero errors).
+- Mutation Score Indicator (MSI) satisfies configured thresholds (>= 70.0%).
 - PHPStan level 8 passing without errors or unjustified suppressions.
 - Zero coding style violations reported by PHP-CS-Fixer.
