@@ -1,0 +1,19 @@
+{
+  "name": "symfony-engineering-agent",
+  "description": "Autonomous software engineering ecosystem for PHP 8.2+ and Symfony 6.4 LTS / 7.x+ featuring 20 specialized agents, 20 actionable skills, and dedicated security and performance nuclei.",
+  "version": "2.2.0",
+  "author": {
+    "name": "Symfony Engineering Specialist Team"
+  },
+  "keywords": [
+    "php",
+    "symfony",
+    "doctrine",
+    "security",
+    "performance",
+    "testing",
+    "api",
+    "owasp",
+    "architecture"
+  ]
+}

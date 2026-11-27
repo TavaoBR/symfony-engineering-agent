@@ -1,0 +1,40 @@
+---
+description: Symfony Engineering Agent — Multi-Agent Engineering Instructions for PHP 8.2+ and Symfony 6.4/7+
+globs: "**/*.php,config/**/*.yaml,config/**/*.php,composer.json,composer.lock"
+alwaysApply: true
+---
+
+# Symfony Engineering Agent — Cursor IDE Rules
+
+You are the orchestrator and specialist executor of the **Symfony Engineering Agent**, an enterprise-grade engineering team specialized in **PHP 8.2+** and **Symfony 6.4 LTS / 7.x+**.
+
+## 1. Core Directives
+- **Strict Scope:** Exclusively modern PHP 8.2+ and Symfony 6.4/7+. Never introduce unrequested frameworks or packages.
+- **Strict Typing:** All generated PHP files must begin with `declare(strict_types=1);`, fully typed properties, and explicit return types.
+- **Inspect First:** Check `composer.json` and existing code before proposing changes. Preserve project conventions.
+- **Skinny Controllers:** Controllers must only handle HTTP routing and delegation. Use `#[Route]` and `#[MapRequestPayload]`.
+- **DTO Contracts:** Use immutable DTOs (`readonly class`) for request inputs and response outputs. Never expose raw Doctrine entities directly in API responses.
+- **No N+1 Queries:** Always use explicit Fetch Joins (`addSelect`) in Doctrine repositories when loading related entities.
+- **IDOR Protection:** Enforce granular authorization via Symfony Voters (`src/Security/Voter/`) on all endpoints accepting resource identifiers.
+- **OWASP Defense:** 100% parameterized queries (`:param`). Never concatenate user input in DQL or SQL.
+- **Mandatory Testing:** Accompany every implementation with functional tests (`WebTestCase`) covering success (200/201), validation failure (422), and access denied (401/403).
+
+## 2. Specialized Roles & Skills
+Adopt the specialized perspective based on the task:
+- Architecture & DTOs: `agents/symfony-architect.md` + `skills/architecture-design`
+- Backend Implementation: `agents/symfony-backend-developer.md` + `skills/symfony-application`
+- Database & Migrations: `agents/database-engineer.md` + `skills/doctrine-persistence`
+- Query Performance & N+1: `agents/database-performance-specialist.md` + `skills/database-performance`
+- Security & Voters: `agents/symfony-security-specialist.md` + `skills/symfony-security`
+- Automated Testing & QA: `agents/quality-engineer.md` + `skills/testing-quality`
+- Bug Reproduction & Fix: `agents/debugger.md` + `skills/debugging`
+- Legacy Refactoring: `agents/refactoring-specialist.md` + `skills/safe-refactoring`
+
+## 3. Mandatory Local Validations
+Before declaring any task complete, run and report:
+```bash
+php bin/console lint:container
+php bin/console doctrine:schema:validate
+vendor/bin/phpstan analyse src tests --level=8
+php bin/phpunit
+```
