@@ -92,6 +92,13 @@ jobs:
           bash -n templates/disaster-recovery/backup-verification.sh
           php templates/disaster-recovery/dr-validator.php --help
 
+      - name: Validate Multi-Agent Swarm & Self-Healing Architecture
+        run: |
+          php templates/swarm/swarm-runner.php --strict
+          php templates/swarm/self-healing-gate.php --strict
+          php templates/swarm/swarm-runner.php --help
+          php templates/swarm/self-healing-gate.php --help
+
       - name: Verify Symfony Messenger Architecture
         run: |
           php templates/messenger/messenger-worker-verifier.php --strict
