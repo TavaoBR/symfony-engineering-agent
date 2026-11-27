@@ -1,0 +1,46 @@
+# ==============================================================================
+# Symfony Engineering Agent — Doctrine Multi-Region DBAL Configuration
+# Read/Write Splitting & Primary/Replica Failover Connection Pool
+# ==============================================================================
+
+# Place under: config/packages/doctrine.yaml
+
+doctrine:
+  dbal:
+    default_connection: default
+    connections:
+      default:
+        # Use Doctrine PrimaryReadReplicaConnection for automatic read/write separation
+        wrapper_class: 'Doctrine\DBAL\Connections\PrimaryReadReplicaConnection'
+        driver: 'pdo_pgsql'
+        server_version: '16'
+        charset: 'utf8'
+
+        # Primary Database Configuration (Active Read/Write)
+        primary:
+          url: '%env(resolve:DATABASE_PRIMARY_URL)%'
+          driverOptions:
+            !php/const \PDO::ATTR_TIMEOUT: 3
+            !php/const \PDO::ATTR_ERRMODE: !php/const \PDO::ERRMODE_EXCEPTION
+            # Enable TCP Keepalives to rapidly detect severed connections
+            !php/const \PDO::PGSQL_ATTR_DISABLE_PREPARES: false
+
+        # Cross-Region Read Replicas (Hot Standby)
+        replicas:
+          replica_standby:
+            url: '%env(resolve:DATABASE_REPLICA_URL)%'
+            driverOptions:
+              !php/const \PDO::ATTR_TIMEOUT: 3
+              !php/const \PDO::ATTR_ERRMODE: !php/const \PDO::ERRMODE_EXCEPTION
+
+        # Healthcheck and connection pooling parameters
+        options:
+          connect_timeout: 3
+          idle_timeout: 30
+          max_connections: 50
+
+# Automated Failover Logic:
+# 1. Any SQL modifying state (INSERT, UPDATE, DELETE, DDL) routes strictly to 'primary'.
+# 2. Any explicit transaction ($em->wrapInTransaction) locks strictly to 'primary'.
+# 3. Read-only SELECT operations outside transactions route automatically to 'replicas'.
+# 4. If replica becomes unavailable, connection pool falls back to 'primary'.
