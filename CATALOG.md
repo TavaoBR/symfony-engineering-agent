@@ -159,3 +159,14 @@
 - `templates/observability/observability-validator.php` — Standalone CLI validator auditing OpenTelemetry tracing, Prometheus metrics, OTel Collector pipelines, and Grafana dashboard PromQL queries.
 - `workflows/observability-telemetry-monitoring.md` — 5-phase operational workflow coordinating telemetry scaffolding, span enrichment, metrics export, and Grafana visualization.
 - `docs/OBSERVABILITY_AND_TELEMETRY.md` — Comprehensive manual for OpenTelemetry distributed tracing, Prometheus metrics, and Grafana production observability.
+
+---
+
+## Enterprise Disaster Recovery (DR) & Failover Templates
+
+- `templates/disaster-recovery/dr-policy.yaml.dist` — Disaster Recovery policy defining RTO (< 5m) and RPO (< 1m) budgets, multi-region active/hot standby topology, and automated failover triggers.
+- `templates/disaster-recovery/doctrine-multiregion.yaml.dist` — Production Doctrine DBAL multi-region primary-replica connection configuration featuring automatic read/write splitting.
+- `templates/disaster-recovery/backup-verification.sh` — Automated bash script for continuous backup restoration testing, cryptographic SHA256 checksum verification, and schema checks.
+- `templates/disaster-recovery/dr-validator.php` — Standalone CLI validator auditing DR policies, RTO/RPO limits, Doctrine primary-replica pooling, and backup verification scripts.
+- `workflows/disaster-recovery-failover.md` — 5-phase operational workflow coordinating DR policy definition, read/write splitting, restoration drills, failover simulation, and signoff.
+- `docs/DISASTER_RECOVERY_AND_FAILOVER.md` — Comprehensive enterprise manual for Disaster Recovery, multi-region replication, and automated backup integrity testing.

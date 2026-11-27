@@ -167,6 +167,11 @@ class Order
   php bin/console doctrine:migrations:diff
   ```
 - Write integration tests using isolated databases (`KernelTestCase`) verifying relational constraints and cascade behavior.
+- Validate multi-region replication and disaster recovery policies:
+  ```bash
+  php templates/disaster-recovery/dr-validator.php --strict
+  ```
+- Refer to `docs/DISASTER_RECOVERY_AND_FAILOVER.md` and `workflows/disaster-recovery-failover.md` for enterprise business continuity.
 
 ## 10. Error Handling and Exceptions
 - Database constraint violations (`UniqueConstraintViolationException`, `ForeignKeyConstraintViolationException`) must be caught and converted into user-friendly domain exceptions.
