@@ -1,0 +1,221 @@
+openapi: 3.1.0
+info:
+  title: Symfony Engineering Agent — Reference API Contract
+  description: OpenAPI 3.1 schema specification for contract testing and schema regression verification.
+  version: 1.0.0
+
+paths:
+  /api/v1/projects:
+    get:
+      summary: List all projects with pagination
+      operationId: listProjects
+      responses:
+        '200':
+          description: Paginated collection of project entities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCollection'
+        '401':
+          $ref: '#/components/responses/UnauthorizedProblem'
+    post:
+      summary: Create a new project resource
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '422':
+          $ref: '#/components/responses/ValidationProblem'
+
+  /api/v1/projects/{id}:
+    get:
+      summary: Retrieve single project details
+      operationId: getProject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Single project entity representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+    delete:
+      summary: Remove a project resource
+      operationId: deleteProject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Resource deleted successfully without body
+        '404':
+          $ref: '#/components/responses/NotFoundProblem'
+
+components:
+  responses:
+    ValidationProblem:
+      description: Unprocessable Entity / Bad Request Validation Error (RFC 7807)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    NotFoundProblem:
+      description: Resource Not Found Error (RFC 7807)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    UnauthorizedProblem:
+      description: Unauthorized Access Error (RFC 7807)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+  schemas:
+    ProjectResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - status
+        - createdAt
+      properties:
+        id:
+          type: integer
+          description: Unique project identifier
+        name:
+          type: string
+          description: Human-readable project title
+        status:
+          type: string
+          enum: [draft, active, archived]
+          description: Lifecycle status of the project
+        budget:
+          type: number
+          nullable: true
+          description: Optional allocated budget amount
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 creation timestamp
+
+    ProjectInput:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Project title
+        status:
+          type: string
+          enum: [draft, active, archived]
+          default: draft
+        budget:
+          type: number
+          nullable: true
+
+    ProjectCollection:
+      type: object
+      additionalProperties: false
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectResponse'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginationMeta:
+      type: object
+      additionalProperties: false
+      required:
+        - total
+        - page
+        - limit
+        - pages
+      properties:
+        total:
+          type: integer
+          description: Total number of matching items
+        page:
+          type: integer
+          description: Current page number
+        limit:
+          type: integer
+          description: Items per page limit
+        pages:
+          type: integer
+          description: Total number of available pages
+
+    ProblemDetails:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          description: URI reference identifying the problem type
+        title:
+          type: string
+          description: Short human-readable summary of the problem
+        status:
+          type: integer
+          description: HTTP status code generated by the origin server
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence
+        instance:
+          type: string
+          description: URI reference identifying the specific occurrence of the problem
+        violations:
+          type: array
+          description: Optional list of field-level validation errors
+          items:
+            type: object
+            required:
+              - propertyPath
+              - message
+            properties:
+              propertyPath:
+                type: string
+                description: The attribute or field that failed validation
+              message:
+                type: string
+                description: Description of the validation failure
