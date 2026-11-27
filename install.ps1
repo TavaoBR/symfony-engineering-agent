@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Installs the Symfony Engineering Agent into your local AI environment (Google Antigravity, Claude Code, Cursor, Copilot).
 .DESCRIPTION
@@ -20,9 +20,9 @@ param(
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-Write-Host "==========================================================" -ForegroundColor Cyan
+Write-Host '==========================================================' -ForegroundColor Cyan
 Write-Host "  Symfony Engineering Agent — Multi-Platform Installer" -ForegroundColor Cyan
-Write-Host "==========================================================" -ForegroundColor Cyan
+Write-Host '==========================================================' -ForegroundColor Cyan
 
 # 1. Global Installation (Antigravity & Claude Code)
 if ($Global -or ([string]::IsNullOrEmpty($TargetProject))) {
@@ -112,4 +112,4 @@ Write-Host '   /audit        - Application Security Auditor (IDOR, CVEs)' -Foreg
 Write-Host '   /debug        - Debugger (Reproduction & fixes)' -ForegroundColor Gray
 Write-Host '   /refactor     - Refactoring Specialist (Modernization)' -ForegroundColor Gray
 Write-Host '   /review       - Code Reviewer (Diff & anti-pattern check)' -ForegroundColor Gray
-Write-Host "==========================================================" -ForegroundColor Cyan
+Write-Host '==========================================================' -ForegroundColor Cyan

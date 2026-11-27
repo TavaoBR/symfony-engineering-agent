@@ -50,6 +50,14 @@ jobs:
         run: |
           php templates/contracts/openapi-validator.php --help
 
+      - name: Test CLI Mutation Runner Help
+        run: |
+          php templates/testing/mutation-runner.php --help
+
+      - name: Test CLI Architectural Validator Help
+        run: |
+          php templates/architecture/architecture-validator.php --help
+
       - name: Validate Plugin Manifest JSON
         run: |
           jq empty plugin.json
@@ -250,6 +258,14 @@ jobs:
             php templates/contracts/openapi-validator.php --strict
           elif [ -f ".agents/templates/contracts/openapi-validator.php" ]; then
             php .agents/templates/contracts/openapi-validator.php --strict
+          fi
+
+      - name: Validate Architectural Boundaries (Deptrac)
+        run: |
+          if [ -f "templates/architecture/architecture-validator.php" ]; then
+            php templates/architecture/architecture-validator.php --strict
+          elif [ -f ".agents/templates/architecture/architecture-validator.php" ]; then
+            php .agents/templates/architecture/architecture-validator.php --strict
           fi
 
       - name: Execute Automated Test Suite (PHPUnit)

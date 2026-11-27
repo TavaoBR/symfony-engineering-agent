@@ -84,3 +84,14 @@
 - `templates/contracts/openapi.yaml.dist` — Reference OpenAPI 3.1 contract specification in YAML format with strict typing and Problem Details error responses.
 - `templates/contracts/openapi.json.dist` — Reference OpenAPI 3.1 contract specification in native JSON format.
 - `docs/OPENAPI_CONTRACT_TESTING.md` — Comprehensive OpenAPI contract testing and schema regression manual.
+
+---
+
+## Mutation Testing & Architectural Boundary Templates
+
+- `templates/testing/infection.json.dist` — Reference Infection PHP mutation testing configuration with default mutator profiles and MSI budgets (70% MSI / 80% Covered MSI).
+- `templates/testing/mutation-runner.php` — Standalone CLI runner executing mutation testing, evaluating MSI thresholds, and generating Markdown reports.
+- `templates/architecture/deptrac.yaml.dist` — Reference Deptrac 1.x/2.x configuration enforcing Hexagonal Architecture layer boundaries (Domain, Application, Infrastructure, Presentation, DTO).
+- `templates/architecture/architecture-validator.php` — Standalone CLI validator running official Deptrac or built-in static layer boundary scanner.
+- `docs/MUTATION_TESTING.md` — Comprehensive mutation testing and test efficacy guide with Infection PHP.
+- `docs/ARCHITECTURAL_BOUNDARIES.md` — Comprehensive architectural boundary enforcement manual with Deptrac.
