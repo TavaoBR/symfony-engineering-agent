@@ -1,0 +1,157 @@
+# ==============================================================================
+# Symfony Engineering Agent — Multi-Agent Swarm Topology Specification
+# Version: 3.0.0 — Major Architecture Milestone
+# Defines Coordinator, Specialist Clusters, Sharding Rules, and Event Bus
+# ==============================================================================
+
+version: "3.0.0"
+swarm_name: "symfony-engineering-swarm"
+description: "Autonomous multi-agent collaborative swarm for large-scale Symfony engineering, parallel task sharding, and self-healing CI/CD."
+
+# Master Orchestration & Coordination
+coordinator:
+  role: "orchestrator"
+  instruction_file: "agents/orchestrator.md"
+  capabilities:
+    - dynamic_task_sharding
+    - dependency_graph_resolution
+    - peer_review_enforcement
+    - subagent_parallel_synthesis
+    - self_healing_arbitration
+
+# Specialist Engineering Clusters (20 Specialized Roles)
+clusters:
+  # ----------------------------------------------------------------------------
+  # 1. Architecture & Core Engineering Cluster
+  # ----------------------------------------------------------------------------
+  architecture:
+    lead: "symfony-architect"
+    members:
+      - name: "symfony-architect"
+        role: "Hexagonal/clean architecture, contracts, immutable DTOs, ADRs"
+        workspace_mode: "share"
+      - name: "project-analyst"
+        role: "Non-destructive codebase discovery and dependency mapping"
+        workspace_mode: "inherit"
+      - name: "project-bootstrapper"
+        role: "Greenfield Symfony project initialization and Flex recipes"
+        workspace_mode: "branch"
+
+  # ----------------------------------------------------------------------------
+  # 2. Backend & Persistence Cluster
+  # ----------------------------------------------------------------------------
+  backend:
+    lead: "symfony-backend-developer"
+    members:
+      - name: "symfony-backend-developer"
+        role: "Skinny controllers, application services, commands, DTO payloads"
+        workspace_mode: "branch"
+      - name: "database-engineer"
+        role: "Relational modeling, Doctrine mappings, repositories, migrations"
+        workspace_mode: "branch"
+      - name: "integration-specialist"
+        role: "Third-party APIs, HttpClient, HMAC webhook verification"
+        workspace_mode: "branch"
+
+  # ----------------------------------------------------------------------------
+  # 3. Quality, Maintenance & Debugging Cluster
+  # ----------------------------------------------------------------------------
+  quality:
+    lead: "quality-engineer"
+    members:
+      - name: "quality-engineer"
+        role: "Automated test suites (PHPUnit, WebTestCase), PHPStan level 8+"
+        workspace_mode: "share"
+      - name: "code-reviewer"
+        role: "Independent diff review, anti-AI patterns, contract verification"
+        workspace_mode: "inherit"
+      - name: "debugger"
+        role: "Root-cause reproduction, automated regression tests, atomic fixes"
+        workspace_mode: "branch"
+      - name: "refactoring-specialist"
+        role: "Modernization to PHP 8.2+, Rector, technical debt reduction"
+        workspace_mode: "branch"
+      - name: "technical-writer"
+        role: "Technical documentation, OpenAPI specifications, ADRs"
+        workspace_mode: "share"
+
+  # ----------------------------------------------------------------------------
+  # 4. Mandatory Security Nucleus Cluster
+  # ----------------------------------------------------------------------------
+  security:
+    lead: "security-engineer"
+    members:
+      - name: "security-engineer"
+        role: "STRIDE threat modeling, defensive architecture governance"
+        workspace_mode: "inherit"
+      - name: "symfony-security-specialist"
+        role: "Firewalls, authenticators, granular resource Voters, rate limits"
+        workspace_mode: "branch"
+      - name: "php-security-specialist"
+        role: "OWASP Top 10 mitigation, SQLi, XSS, SSRF, secret management"
+        workspace_mode: "inherit"
+      - name: "application-security-auditor"
+        role: "Endpoint audit, IDOR/BOLA verification, tenant isolation"
+        workspace_mode: "inherit"
+
+  # ----------------------------------------------------------------------------
+  # 5. Mandatory High-Performance Nucleus Cluster
+  # ----------------------------------------------------------------------------
+  performance:
+    lead: "performance-engineer"
+    members:
+      - name: "performance-engineer"
+        role: "Bottleneck diagnosis, latency/memory budgets, profiler benchmarks"
+        workspace_mode: "inherit"
+      - name: "symfony-performance-specialist"
+        role: "DI Container optimization, private services, async Messenger"
+        workspace_mode: "branch"
+      - name: "database-performance-specialist"
+        role: "Elimination of N+1 queries, Fetch Joins, indexes, EXPLAIN"
+        workspace_mode: "branch"
+      - name: "php-performance-specialist"
+        role: "Algorithm complexity (O(n)), Generators (yield), memory leaks"
+        workspace_mode: "inherit"
+
+# Dynamic Task Sharding Protocols
+sharding:
+  strategies:
+    - name: "domain_driven"
+      description: "Splits epics by bounded contexts (e.g. Identity, Billing, Catalog)"
+    - name: "layer_driven"
+      description: "Parallelizes development across DBAL, Service, Controller, and Tests"
+    - name: "verification_driven"
+      description: "Fans out security audits, performance profiling, and test execution"
+  max_parallel_workers: 8
+  default_timeout_seconds: 300
+
+# Event-Driven Communication Board
+event_bus:
+  states:
+    - "queued"
+    - "assigned"
+    - "in_progress"
+    - "blocked"
+    - "verified"
+    - "completed"
+    - "failed"
+  message_types:
+    - "task_assignment"
+    - "contract_published"
+    - "diff_ready_for_review"
+    - "review_signoff"
+    - "ci_gate_failure"
+    - "self_healing_request"
+    - "final_synthesis"
+
+# Autonomous Self-Healing Policies
+self_healing:
+  enabled: true
+  max_retry_budget: 3
+  automated_remediation_roles:
+    lint_container_failure: "symfony-backend-developer"
+    phpstan_level8_failure: "quality-engineer"
+    phpunit_test_failure: "debugger"
+    schema_mismatch_failure: "database-engineer"
+    security_vulnerability_failure: "symfony-security-specialist"
+    performance_budget_failure: "database-performance-specialist"
