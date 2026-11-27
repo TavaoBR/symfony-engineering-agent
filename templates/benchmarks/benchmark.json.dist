@@ -1,0 +1,53 @@
+{
+  "base_url": "http://127.0.0.1:8000",
+  "options": {
+    "warmup_runs": 3,
+    "measured_runs": 15
+  },
+  "targets": [
+    {
+      "name": "List Projects API",
+      "method": "GET",
+      "path": "/api/v1/projects",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "budgets": {
+        "max_duration_ms": 150.0,
+        "max_memory_mb": 24.0,
+        "max_queries": 4
+      }
+    },
+    {
+      "name": "Get Single Project Details",
+      "method": "GET",
+      "path": "/api/v1/projects/1",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "budgets": {
+        "max_duration_ms": 80.0,
+        "max_memory_mb": 16.0,
+        "max_queries": 2
+      }
+    },
+    {
+      "name": "Create Project Mutation",
+      "method": "POST",
+      "path": "/api/v1/projects",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "payload": {
+        "name": "Benchmark Test Project",
+        "client_id": 1
+      },
+      "budgets": {
+        "max_duration_ms": 200.0,
+        "max_memory_mb": 28.0,
+        "max_queries": 6
+      }
+    }
+  ]
+}
