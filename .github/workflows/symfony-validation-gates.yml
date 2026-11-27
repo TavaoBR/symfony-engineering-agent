@@ -70,6 +70,12 @@ jobs:
         run: |
           php templates/security/cve-remediator.php --help
 
+      - name: Validate Container & Docker Architecture
+        run: |
+          php templates/docker/docker-validator.php --strict
+          bash -n templates/docker/docker-entrypoint.sh
+          php templates/docker/docker-validator.php --help
+
       - name: Verify Symfony Messenger Architecture
         run: |
           php templates/messenger/messenger-worker-verifier.php --strict
