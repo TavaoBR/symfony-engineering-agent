@@ -76,6 +76,11 @@ jobs:
           bash -n templates/docker/docker-entrypoint.sh
           php templates/docker/docker-validator.php --help
 
+      - name: Validate Kubernetes Helm & GitOps Architecture
+        run: |
+          php templates/kubernetes/k8s-validator.php --strict
+          php templates/kubernetes/k8s-validator.php --help
+
       - name: Verify Symfony Messenger Architecture
         run: |
           php templates/messenger/messenger-worker-verifier.php --strict
