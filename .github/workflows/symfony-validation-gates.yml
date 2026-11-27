@@ -99,6 +99,13 @@ jobs:
           php templates/swarm/swarm-runner.php --help
           php templates/swarm/self-healing-gate.php --help
 
+      - name: Validate Semantic Memory & Knowledge Graph RAG Architecture
+        run: |
+          php templates/rag/semantic-indexer.php --strict
+          php templates/rag/rag-query.php --strict
+          php templates/rag/semantic-indexer.php --help
+          php templates/rag/rag-query.php --help
+
       - name: Verify Symfony Messenger Architecture
         run: |
           php templates/messenger/messenger-worker-verifier.php --strict
