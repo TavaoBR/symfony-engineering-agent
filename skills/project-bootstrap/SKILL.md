@@ -76,6 +76,11 @@ php bin/console lint:container
   ```bash
   php bin/phpunit
   ```
+- Validate container architecture manifests (FrankenPHP / Docker Compose / Caddy):
+  ```bash
+  php templates/docker/docker-validator.php --strict
+  ```
+- Refer to `docs/DOCKER_CONTAINERIZATION.md` and `workflows/containerization-deployment.md` for production containerization.
 
 ## 10. Error Handling and Exceptions
 - If Flex recipe conflicts occur, inspect `config/bundles.php` and modified files in `config/packages/`, resolving discrepancies before proceeding.

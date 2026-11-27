@@ -116,3 +116,16 @@
 - `templates/security/cve-remediator.php` — Standalone CLI dependency auditor parsing `composer audit`, generating structured vulnerability reports, and emitting atomic remediation update commands.
 - `workflows/cve-remediation.md` — 5-phase operational workflow coordinating triage, blast radius analysis, atomic update, and verification gates.
 - `docs/SAST_AND_CVE_REMEDIATION.md` — Comprehensive SAST security scanning and automated CVE remediation manual.
+
+---
+
+## Containerization & Production Docker Templates
+
+- `templates/docker/Dockerfile.frankenphp` — Multi-stage Dockerfile for Symfony 6.4/7+ on PHP 8.2/8.3 using FrankenPHP with Worker Mode, Caddy, HTTP/3 QUIC, and non-root execution.
+- `templates/docker/Dockerfile.php-fpm` — Multi-stage Dockerfile for traditional Nginx and PHP-FPM architectures.
+- `templates/docker/Caddyfile.dist` — Production-tuned Caddyfile configuration featuring FrankenPHP worker mode, modern compression (Zstandard/Gzip), and strict HTTP security headers.
+- `templates/docker/compose.yaml.dist` — Production-grade Docker Compose orchestration defining FrankenPHP web/app, PostgreSQL 16, Redis 7, and Symfony Messenger async worker.
+- `templates/docker/docker-entrypoint.sh` — POSIX-compliant container entrypoint script handling database connectivity polling, automatic migrations, and production cache warmup.
+- `templates/docker/docker-validator.php` — Standalone CLI validator auditing multi-stage targets, non-root user directives, healthchecks, Compose dependencies, and security headers.
+- `workflows/containerization-deployment.md` — 5-phase operational workflow coordinating container architecture selection, worker tuning, security hardening, and deployment signoff.
+- `docs/DOCKER_CONTAINERIZATION.md` — Comprehensive manual for FrankenPHP containerization, worker mode tuning, and production orchestration.
