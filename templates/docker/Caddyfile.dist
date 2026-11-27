@@ -1,0 +1,45 @@
+{
+    # Global options
+    frankenphp {
+        num_threads auto
+        worker {
+            file /app/public/index.php
+            num auto
+            env APP_RUNTIME "Runtime\\FrankenPhpSymfony\\Runtime"
+        }
+    }
+    # Directives ordering
+    order mercure before respond
+    order vulcain before reverse_proxy
+}
+
+:80 {
+    # Structured JSON access logging
+    log {
+        output stdout
+        format json
+        level INFO
+    }
+
+    # Enable modern compression (Zstandard and Gzip)
+    encode zstd gzip
+
+    # Production Security Headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+        -Server
+    }
+
+    # Dedicated Healthcheck probe endpoint
+    respond /up 200
+
+    # Public web document root
+    root * /app/public
+
+    # FrankenPHP server execution handler
+    php_server
+}

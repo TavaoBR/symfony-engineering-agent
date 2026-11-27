@@ -1,0 +1,108 @@
+# ==============================================================================
+# Symfony Engineering Agent — Production Docker Compose Orchestration
+# Services: FrankenPHP (App/Web), PostgreSQL 16 (DB), Redis 7 (Cache/Queue), Worker
+# ==============================================================================
+
+name: symfony-app
+
+services:
+  # ----------------------------------------------------------------------------
+  # Application Server (FrankenPHP + Caddy + Worker Mode)
+  # ----------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: templates/docker/Dockerfile.frankenphp
+      target: dev # Switch to 'prod' for production deployments
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3 QUIC
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      APP_SECRET: ${APP_SECRET:-ChangeMeInProductionSecretKey32Bytes}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-symfony_user}:${POSTGRES_PASSWORD:-symfony_pass}@database:5432/${POSTGRES_DB:-symfony_db}?serverVersion=16&charset=utf8
+      REDIS_URL: redis://redis:6379
+      MESSENGER_TRANSPORT_DSN: redis://redis:6379/messages
+      CADDY_GLOBAL_OPTIONS: "--envfile .env"
+    volumes:
+      - ./:/app:rw
+      - /app/var
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/up"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 15s
+
+  # ----------------------------------------------------------------------------
+  # Relational Database (PostgreSQL 16)
+  # ----------------------------------------------------------------------------
+  database:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-symfony_db}
+      POSTGRES_USER: ${POSTGRES_USER:-symfony_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-symfony_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-symfony_user} -d ${POSTGRES_DB:-symfony_db}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # In-Memory Cache & Message Broker (Redis 7)
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data:rw
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # Asynchronous Background Worker (Symfony Messenger Consumer)
+  # ----------------------------------------------------------------------------
+  messenger-worker:
+    build:
+      context: .
+      dockerfile: templates/docker/Dockerfile.frankenphp
+      target: dev
+    restart: unless-stopped
+    command: ["php", "bin/console", "messenger:consume", "async", "--memory-limit=128M", "--time-limit=3600"]
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      APP_SECRET: ${APP_SECRET:-ChangeMeInProductionSecretKey32Bytes}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-symfony_user}:${POSTGRES_PASSWORD:-symfony_pass}@database:5432/${POSTGRES_DB:-symfony_db}?serverVersion=16&charset=utf8
+      REDIS_URL: redis://redis:6379
+      MESSENGER_TRANSPORT_DSN: redis://redis:6379/messages
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  db_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
