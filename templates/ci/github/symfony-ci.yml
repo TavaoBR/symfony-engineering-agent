@@ -62,6 +62,14 @@ jobs:
         run: |
           php templates/load-testing/k6-runner.php --help
 
+      - name: Test CLI SAST Security Scanner Help
+        run: |
+          php templates/security/sast-scanner.php --help
+
+      - name: Test CLI Dependency CVE Auditor Help
+        run: |
+          php templates/security/cve-remediator.php --help
+
       - name: Verify Symfony Messenger Architecture
         run: |
           php templates/messenger/messenger-worker-verifier.php --strict
@@ -157,8 +165,19 @@ jobs:
           php-version: '8.2'
           coverage: none
 
+      - name: Run SAST Security Scan
+        run: |
+          if [ -f "templates/security/sast-scanner.php" ]; then
+            php templates/security/sast-scanner.php --strict
+          fi
+
       - name: Audit Composer Dependencies for Known CVEs
-        run: composer audit
+        run: |
+          if [ -f "templates/security/cve-remediator.php" ]; then
+            php templates/security/cve-remediator.php
+          else
+            composer audit
+          fi
 
   # ============================================================================
   # Gate 3: Static Analysis (Runs on Symfony Applications)
