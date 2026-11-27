@@ -109,6 +109,11 @@ final class CatalogProcessor
   ```
 - Use the standalone runner (`php templates/benchmarks/benchmark-runner.php`) for P50/P95 latency percentiles.
 - Refer to `docs/PROFILER_BENCHMARKS.md` for full implementation guidelines.
+- Validate OpenTelemetry distributed tracing and Prometheus metrics architecture:
+  ```bash
+  php templates/observability/observability-validator.php --strict
+  ```
+- Refer to `docs/OBSERVABILITY_AND_TELEMETRY.md` and `workflows/observability-telemetry-monitoring.md` for production observability.
 
 ## 10. Error Handling and Exceptions
 - Profiler timeouts and diagnostic errors must be handled without disrupting production traffic.

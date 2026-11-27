@@ -147,3 +147,15 @@
 - `templates/kubernetes/k8s-validator.php` — Standalone CLI validator auditing Helm chart metadata, resource quotas, CIS non-root execution, HPA, and GitOps syntax.
 - `workflows/kubernetes-gitops-deployment.md` — 5-phase operational workflow coordinating cluster architecture, HPA calibration, GitOps delivery, and release signoff.
 - `docs/KUBERNETES_AND_GITOPS.md` — Comprehensive cloud-native manual for Kubernetes, Helm, HPA, and GitOps continuous delivery.
+
+---
+
+## Observability, OpenTelemetry & Metrics Templates
+
+- `templates/observability/otel.yaml.dist` — OpenTelemetry PHP SDK/bundle configuration with ParentBased tracing sampler, OTLP exporters, and auto-instrumentation for HTTP, Doctrine, Messenger, and HttpClient.
+- `templates/observability/prometheus.yaml.dist` — Prometheus metrics exporter specification defining HTTP RED metrics, Doctrine query histograms, Messenger queue gauges, and OPcache metrics.
+- `templates/observability/otel-collector-config.yaml.dist` — OpenTelemetry Collector pipeline configuration with memory limiter, batch processors, and OTLP/Prometheus exporters.
+- `templates/observability/grafana/symfony-dashboard.json` — Production-ready Grafana dashboard JSON featuring executive SLA panels, latency percentiles, error rates, and queue backlog monitors.
+- `templates/observability/observability-validator.php` — Standalone CLI validator auditing OpenTelemetry tracing, Prometheus metrics, OTel Collector pipelines, and Grafana dashboard PromQL queries.
+- `workflows/observability-telemetry-monitoring.md` — 5-phase operational workflow coordinating telemetry scaffolding, span enrichment, metrics export, and Grafana visualization.
+- `docs/OBSERVABILITY_AND_TELEMETRY.md` — Comprehensive manual for OpenTelemetry distributed tracing, Prometheus metrics, and Grafana production observability.
