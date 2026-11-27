@@ -1,0 +1,38 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: symfony-app
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/my-org/my-symfony-app.git
+  ref:
+    branch: main
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: symfony-app
+  namespace: production
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: templates/kubernetes/helm/symfony-app
+      sourceRef:
+        kind: GitRepository
+        name: symfony-app
+        namespace: flux-system
+      interval: 1m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    replicaCount: 3
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 15
