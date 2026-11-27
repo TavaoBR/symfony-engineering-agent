@@ -1,0 +1,28 @@
+# Modern PHP Standards
+
+- Discover the minimum PHP version declared in `composer.json` and the active runtime version (`php -v`, container, or CI) before using language features.
+- Respect `composer.json`, `config.platform.php`, CI, Docker, and production runtime environments; flag any version discrepancies.
+- Add `declare(strict_types=1);` at the top of all new PHP files.
+- Strict and declarative typing: declare explicit parameter types, return types, and class property types. Avoid `mixed` unless strictly necessary and documented.
+- Immutability and encapsulation:
+  - Use `readonly` properties and `readonly class` (PHP 8.2+) for DTOs, Value Objects, and immutable domain models.
+  - Mark concrete classes as `final` when inheritance is not an explicit design requirement; prefer composition over inheritance.
+- Modern PHP features (PHP 8.1 / 8.2 / 8.3 / 8.4):
+  - Use backed `enum` (`string` or `int`) for closed sets of domain values, implementing methods and interfaces when appropriate.
+  - Prefer `match` expressions over `switch` statements to avoid loose comparisons and fallthrough bugs.
+  - Use constructor property promotion for clean dependency injection.
+  - Use first-class callable syntax (`$this->method(...)`) when passing callables.
+  - Use the nullsafe operator (`?->`) deliberately; do not use it to mask unexpected domain `null` values.
+  - In PHP 8.3+, type class constants (`public const string DEFAULT_STATUS = 'active';`).
+- PSR standards and coding style:
+  - Follow PER Coding Style 2.0 / PSR-12 for formatting.
+  - Strictly adhere to PSR-1 (Basic Coding Standard) and PSR-4 (Autoloading).
+- Error handling and exceptions:
+  - Never swallow exceptions with empty `catch` blocks.
+  - Use typed, descriptive domain exception hierarchies extending `\RuntimeException` or `\LogicException`.
+  - Handle nullability, boundary values, type conversions, and dates explicitly using `\DateTimeImmutable`.
+- Resource and memory management:
+  - Close opened streams and file handles (`fclose`) or use `try-finally`.
+  - Avoid loading large datasets into in-memory arrays; use `Generator` (`yield`) or streaming iterators for bulk data.
+- Do not use deprecated functions or language constructs.
+- Do not reformat unaffected, untouched files outside the task scope.
