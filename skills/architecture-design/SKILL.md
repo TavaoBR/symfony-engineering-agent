@@ -131,6 +131,10 @@ final readonly class ChargeCustomerUseCase
   ```bash
   php bin/console lint:container
   ```
+- Enforce Hexagonal architectural boundaries using Deptrac:
+  ```bash
+  php templates/architecture/architecture-validator.php --strict
+  ```
 
 ## 10. Error Handling and Exceptions
 - Domain exceptions must extend `\DomainException` and reflect business rule violations independent of HTTP.
@@ -138,4 +142,5 @@ final readonly class ChargeCustomerUseCase
 ## 11. Objective Quality and Completion Criteria
 - Architecture documented in `docs/ARCHITECTURE.md`.
 - Architectural choices recorded in `docs/DECISIONS.md`.
+- Zero forbidden layer dependencies detected by `architecture-validator.php` (Deptrac).
 - Domain layer free of third-party transport or external SDK imports.

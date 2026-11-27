@@ -1,0 +1,59 @@
+deptrac:
+  paths:
+    - src/
+  exclude_files:
+    - '#.*test.*#'
+    - '#.*Kernel\.php#'
+    - '#.*Migrations/.*#'
+
+  layers:
+    - name: Domain
+      collectors:
+        - type: directory
+          value: src/Domain/.*
+        - type: classNameRegex
+          regex: '#^App\\Domain\\.*#'
+
+    - name: Application
+      collectors:
+        - type: directory
+          value: src/Application/.*
+        - type: classNameRegex
+          regex: '#^App\\Application\\.*#'
+
+    - name: Infrastructure
+      collectors:
+        - type: directory
+          value: src/Infrastructure/.*
+        - type: classNameRegex
+          regex: '#^App\\Infrastructure\\.*#'
+
+    - name: Presentation
+      collectors:
+        - type: directory
+          value: src/(Controller|Command|Presentation)/.*
+        - type: classNameRegex
+          regex: '#^App\\(Controller|Command|Presentation)\\.*#'
+
+    - name: DTO
+      collectors:
+        - type: directory
+          value: src/DTO/.*
+        - type: classNameRegex
+          regex: '#^App\\DTO\\.*#'
+
+  ruleset:
+    Domain: []
+    Application:
+      - Domain
+      - DTO
+    Infrastructure:
+      - Domain
+      - Application
+      - DTO
+    Presentation:
+      - Application
+      - Domain
+      - DTO
+    DTO:
+      - Domain
