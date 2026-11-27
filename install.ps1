@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Installs the Symfony Engineering Agent into your local AI environment (Google Antigravity, Claude Code, Cursor, Copilot).
 .DESCRIPTION
@@ -21,7 +21,7 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 Write-Host '==========================================================' -ForegroundColor Cyan
-Write-Host "  Symfony Engineering Agent — Multi-Platform Installer" -ForegroundColor Cyan
+Write-Host '  Symfony Engineering Agent - Multi-Platform Installer' -ForegroundColor Cyan
 Write-Host '==========================================================' -ForegroundColor Cyan
 
 # 1. Global Installation (Antigravity & Claude Code)
@@ -48,7 +48,7 @@ if ($Global -or ([string]::IsNullOrEmpty($TargetProject))) {
         $DestSkill = Join-Path $GeminiSkillsDir $_.Name
         Copy-Item -Path $_.FullName -Destination $DestSkill -Recurse -Force
     }
-    Write-Host "  -> Antigravity plugin and slash command skills installed in: $GeminiPluginDir" -ForegroundColor Green
+    Write-Host '  -> Antigravity plugin and slash command skills installed in:' $GeminiPluginDir -ForegroundColor Green
 
     Write-Host "`n[2/2] Installing globally for Claude Code CLI..." -ForegroundColor Yellow
     $ClaudeCommandsDir = Join-Path $env:USERPROFILE ".claude\commands"
@@ -57,7 +57,7 @@ if ($Global -or ([string]::IsNullOrEmpty($TargetProject))) {
     Get-ChildItem -Path (Join-Path $ScriptDir ".claude\commands\*.md") | ForEach-Object {
         Copy-Item -Path $_.FullName -Destination $ClaudeCommandsDir -Force
     }
-    Write-Host "  -> Claude Code slash commands installed in: $ClaudeCommandsDir" -ForegroundColor Green
+    Write-Host '  -> Claude Code slash commands installed in:' $ClaudeCommandsDir -ForegroundColor Green
 }
 
 # 2. Target Project Installation
@@ -95,7 +95,7 @@ if (-not [string]::IsNullOrEmpty($TargetProject)) {
     New-Item -ItemType Directory -Path $GithubDir -Force | Out-Null
     Copy-Item -Path (Join-Path $ScriptDir ".github\copilot-instructions.md") -Destination $GithubDir -Force
 
-    Write-Host "  -> Successfully configured target project!" -ForegroundColor Green
+    Write-Host '  -> Successfully configured target project!' -ForegroundColor Green
 }
 
 Write-Host ''

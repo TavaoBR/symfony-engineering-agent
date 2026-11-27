@@ -106,3 +106,13 @@
 - `templates/messenger/messenger-worker-verifier.php` — Standalone CLI verifier auditing queue routing, retry policies, and worker health.
 - `docs/LOAD_AND_STRESS_TESTING.md` — Comprehensive load and stress testing manual with k6 and concurrency tuning.
 - `docs/ASYNC_MESSENGER_SCALING.md` — Comprehensive asynchronous worker scaling and queue verification manual with Symfony Messenger.
+
+---
+
+## Static Application Security Testing (SAST) & CVE Remediation Templates
+
+- `templates/security/semgrep.yaml.dist` — Custom Semgrep ruleset for PHP 8.2+ and Symfony 6.4/7+ detecting SQL Injection, insecure deserialization, command execution, path traversal, open redirects, and hardcoded secrets.
+- `templates/security/sast-scanner.php` — Standalone CLI SAST security scanner executing Semgrep or fallback static AST analysis, evaluating vulnerability severity thresholds.
+- `templates/security/cve-remediator.php` — Standalone CLI dependency auditor parsing `composer audit`, generating structured vulnerability reports, and emitting atomic remediation update commands.
+- `workflows/cve-remediation.md` — 5-phase operational workflow coordinating triage, blast radius analysis, atomic update, and verification gates.
+- `docs/SAST_AND_CVE_REMEDIATION.md` — Comprehensive SAST security scanning and automated CVE remediation manual.

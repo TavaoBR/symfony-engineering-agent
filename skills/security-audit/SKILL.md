@@ -91,10 +91,18 @@ public function getReport(
   - **Low:** Missing security headers (HSTS, CSP), subtle user enumeration.
 
 ## 9. Validation and Testing Procedures
-- Run dependency audit:
+- Run automated SAST security scan (Semgrep / AST):
   ```bash
+  php templates/security/sast-scanner.php --strict
+  ```
+- Run automated dependency CVE audit and remediation plan:
+  ```bash
+  php templates/security/cve-remediator.php
+  # Or official Composer audit directly:
   composer audit
   ```
+- Follow the 5-phase operational workflow for vulnerability remediation:
+  - See `workflows/cve-remediation.md` and `docs/SAST_AND_CVE_REMEDIATION.md`.
 - Inspect routes and firewalls:
   ```bash
   php bin/console debug:router

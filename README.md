@@ -712,6 +712,7 @@ To enforce these quality gates automatically on every Pull Request, the reposito
 - **Strict Input Validation:** Untrusted input is strictly validated via typed DTOs with Symfony Validator constraints.
 - **Injection Defense:** 100% of database queries use bound parameters (`:param`). Concatenation in SQL or DQL is strictly prohibited.
 - **IDOR Prevention:** Verification by `application-security-auditor` confirming cross-tenant data isolation.
+- **Automated SAST & CVE Remediation:** Static Application Security Testing with Semgrep custom rules (`templates/security/semgrep.yaml.dist`, `sast-scanner.php`) and automated 5-phase dependency CVE remediation (`cve-remediator.php`, [docs/SAST_AND_CVE_REMEDIATION.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/SAST_AND_CVE_REMEDIATION.md)).
 
 ### 15.2 High-Performance Nucleus
 - **Zero Tolerance for N+1 Queries:** Repositories must utilize Fetch Joins in Doctrine QueryBuilder when child entities are accessed.
@@ -766,7 +767,8 @@ To enforce these quality gates automatically on every Pull Request, the reposito
 - [x] **v2.5:** Automated OpenAPI/Swagger contract generation and schema regression test harnesses (see [docs/OPENAPI_CONTRACT_TESTING.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/OPENAPI_CONTRACT_TESTING.md) and `templates/contracts/`).
 - [x] **v2.6:** Mutation testing integration with Infection PHP and automated architectural boundary enforcement with Deptrac (see [docs/MUTATION_TESTING.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/MUTATION_TESTING.md), [docs/ARCHITECTURAL_BOUNDARIES.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/ARCHITECTURAL_BOUNDARIES.md), `templates/testing/`, and `templates/architecture/`).
 - [x] **v2.7:** Automated load and stress testing harnesses with k6 and asynchronous worker scaling verification with Symfony Messenger (see [docs/LOAD_AND_STRESS_TESTING.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/LOAD_AND_STRESS_TESTING.md), [docs/ASYNC_MESSENGER_SCALING.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/ASYNC_MESSENGER_SCALING.md), `templates/load-testing/`, and `templates/messenger/`).
-- [ ] **v2.8 (Upcoming):** Static Application Security Testing (SAST) with Semgrep and automated OWASP dependency CVE remediation workflows.
+- [x] **v2.8:** Static Application Security Testing (SAST) with Semgrep and automated OWASP dependency CVE remediation workflows (see [docs/SAST_AND_CVE_REMEDIATION.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/docs/SAST_AND_CVE_REMEDIATION.md), [workflows/cve-remediation.md](file:///d:/gow/symfony-engineering-agent-v2.0/symfony-engineering-agent/workflows/cve-remediation.md), and `templates/security/`).
+- [ ] **v2.9 (Upcoming):** Automated containerization with Docker, FrankenPHP/RoadRunner Caddyfiles, and multi-stage production builds.
 
 ---
 
