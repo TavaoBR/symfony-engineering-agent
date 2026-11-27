@@ -1,0 +1,181 @@
+name: Symfony Agent Validation Gates
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_ENV: test
+  DATABASE_URL: "postgresql://symfony_user:symfony_pass@127.0.0.1:5432/symfony_test?serverVersion=16&charset=utf8"
+
+jobs:
+  lint-and-container:
+    name: "Lint & Container Integrity"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, pdo, pdo_pgsql, xml, ctype, iconv
+          coverage: none
+
+      - name: Validate Composer Configuration
+        run: composer validate --strict
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Lint Symfony DI Container
+        run: php bin/console lint:container --no-debug
+
+      - name: Lint YAML Configuration
+        run: php bin/console lint:yaml config --parse-tags
+
+      - name: Lint Twig Templates
+        run: |
+          if [ -d "templates" ]; then
+            php bin/console lint:twig templates
+          else
+            echo "No templates directory found, skipping Twig lint."
+          fi
+
+  security-audit:
+    name: "Security Audit (OWASP / CVEs)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Audit Composer Dependencies for Known CVEs
+        run: composer audit
+
+  static-analysis:
+    name: "PHPStan Static Analysis (Level 8+)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, pdo, pdo_pgsql, xml, ctype, iconv
+          coverage: none
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHPStan Analysis
+        run: |
+          if [ -f "vendor/bin/phpstan" ]; then
+            vendor/bin/phpstan analyse --error-format=github
+          elif [ -f "bin/phpstan" ]; then
+            bin/phpstan analyse --error-format=github
+          else
+            echo "PHPStan binary not found; skipping."
+          fi
+
+  database-and-tests:
+    name: "Database Schema & PHPUnit Tests"
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: symfony_test
+          POSTGRES_USER: symfony_user
+          POSTGRES_PASSWORD: symfony_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.2', '8.3']
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, intl, pdo, pdo_pgsql, xml, ctype, iconv
+          coverage: none
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-${{ matrix.php-version }}-
+
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Validate Doctrine ORM Mapping
+        run: php bin/console doctrine:schema:validate --skip-sync
+
+      - name: Prepare Test Database & Run Migrations
+        run: |
+          php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+      - name: Validate Doctrine Schema Synchronization
+        run: php bin/console doctrine:schema:validate --env=test
+
+      - name: Validate OpenAPI Contract Specification
+        run: |
+          if [ -f "templates/contracts/openapi-validator.php" ]; then
+            php templates/contracts/openapi-validator.php --strict
+          elif [ -f ".agents/templates/contracts/openapi-validator.php" ]; then
+            php .agents/templates/contracts/openapi-validator.php --strict
+          fi
+
+      - name: Execute Automated Test Suite (PHPUnit)
+        run: |
+          if [ -f "bin/phpunit" ]; then
+            php bin/phpunit --testdox
+          elif [ -f "vendor/bin/phpunit" ]; then
+            vendor/bin/phpunit --testdox
+          else
+            echo "PHPUnit binary not found; skipping."
+          fi

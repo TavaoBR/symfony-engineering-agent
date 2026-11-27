@@ -1,0 +1,83 @@
+# ==============================================================================
+# Symfony Engineering Agent — GitLab CI/CD Pipeline
+# ==============================================================================
+
+stages:
+  - validate
+  - analyze
+  - security
+  - test
+
+variables:
+  APP_ENV: "test"
+  DATABASE_URL: "postgresql://symfony_user:symfony_pass@postgres:5432/symfony_test?serverVersion=16&charset=utf8"
+  POSTGRES_DB: "symfony_test"
+  POSTGRES_USER: "symfony_user"
+  POSTGRES_PASSWORD: "symfony_pass"
+
+default:
+  image: php:8.2-cli
+  before_script:
+    - apt-get update -yqq
+    - apt-get install -yqq libpq-dev libicu-dev libzip-dev git unzip
+    - docker-php-ext-install pdo pdo_pgsql intl zip
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer install --prefer-dist --no-progress --no-interaction
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - vendor/
+
+# ------------------------------------------------------------------------------
+# Stage 1: Validation & Linting
+# ------------------------------------------------------------------------------
+lint:composer:
+  stage: validate
+  script:
+    - composer validate --strict
+
+lint:container:
+  stage: validate
+  script:
+    - php bin/console lint:container --no-debug
+
+lint:yaml:
+  stage: validate
+  script:
+    - php bin/console lint:yaml config --parse-tags
+
+# ------------------------------------------------------------------------------
+# Stage 2: Security & Dependency Audit
+# ------------------------------------------------------------------------------
+security:composer_audit:
+  stage: security
+  script:
+    - composer audit
+
+# ------------------------------------------------------------------------------
+# Stage 3: Static Analysis
+# ------------------------------------------------------------------------------
+analyze:phpstan:
+  stage: analyze
+  script:
+    - vendor/bin/phpstan analyse src tests --level=8
+
+# ------------------------------------------------------------------------------
+# Stage 4: Database Schema & Automated Tests
+# ------------------------------------------------------------------------------
+test:phpunit:
+  stage: test
+  services:
+    - name: postgres:16-alpine
+      alias: postgres
+  script:
+    - php bin/console doctrine:schema:validate --skip-sync
+    - php bin/console doctrine:database:create --if-not-exists --env=test
+    - php bin/console doctrine:migrations:migrate --no-interaction --env=test
+    - php bin/console doctrine:schema:validate --env=test
+    - |
+      if [ -f "templates/contracts/openapi-validator.php" ]; then
+        php templates/contracts/openapi-validator.php --strict
+      fi
+    - php bin/phpunit --testdox
