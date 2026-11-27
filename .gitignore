@@ -1,0 +1,43 @@
+# Local secrets, credentials and environment overrides
+.env.local
+.env.*.local
+*.env
+*.env.*
+!.env.example
+!.env.test.example
+*.pem
+*.key
+*.pub
+*.cert
+*.crt
+id_rsa*
+*.pfx
+*.p12
+
+# Symfony / Composer runtime & cache
+/var/
+/vendor/
+composer.phar
+.phpunit.result.cache
+
+# Benchmark & Temporary outputs
+benchmark-report.json
+*.prof
+*.flamegraph
+
+# IDEs & Editor directories
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.bak
+*.swp
+*~
