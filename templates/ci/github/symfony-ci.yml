@@ -86,6 +86,12 @@ jobs:
           php templates/observability/observability-validator.php --strict
           php templates/observability/observability-validator.php --help
 
+      - name: Validate Disaster Recovery & Multi-Region Architecture
+        run: |
+          php templates/disaster-recovery/dr-validator.php --strict
+          bash -n templates/disaster-recovery/backup-verification.sh
+          php templates/disaster-recovery/dr-validator.php --help
+
       - name: Verify Symfony Messenger Architecture
         run: |
           php templates/messenger/messenger-worker-verifier.php --strict
