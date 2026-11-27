@@ -1,0 +1,86 @@
+# Catalog of Skills and Agents — Symfony Engineering Agent
+
+## Skills (20 Specialized Procedures)
+
+### Core Engineering & Architecture
+- `project-discovery` — Factual project analysis (versions, bundles, routes, conventions).
+- `project-bootstrap` — Official Symfony project initialization from scratch (CLI, skeleton, Flex recipes, tests, README).
+- `architecture-design` — Architecture design (domain boundaries, Clean/Hexagonal, DTOs, ADRs).
+- `symfony-application` — Application feature development (Controllers, DTOs, Services, Messenger, Commands).
+- `doctrine-persistence` — Persistence with Doctrine ORM/DBAL (entities, relationships, repositories, migrations).
+- `api-design` — HTTP API design and implementation (RESTful, DTOs, MapRequestPayload, RFC 7807/9457).
+- `testing-quality` — Automated testing and code quality (PHPUnit, WebTestCase, PHPStan, PHP-CS-Fixer).
+- `external-api-integration` — External API and webhook integration (HttpClient, resilience, HMAC-SHA256 signatures).
+- `debugging` — Root-cause bug investigation and automated regression test creation.
+- `safe-refactoring` — Safe refactoring and modernization to PHP 8.2+ (Rector, attributes, characterization tests).
+- `code-review` — Independent code and Pull Request review (severity matrix, anti-ai-patterns).
+- `technical-documentation` — Engineering documentation (README, ARCHITECTURE.md, ADRs in DECISIONS.md).
+
+### Security Nucleus
+- `symfony-security` — Symfony Security framework implementation (Firewalls, Authenticators, granular Voters, CSRF, RateLimiter).
+- `secure-coding` — PHP secure coding practices (OWASP Top 10, sanitization, SSRF guards, Path Traversal, secrets).
+- `security-audit` — Application security auditing (endpoint matrix, IDOR/BOLA verification, tenant isolation, CVSS).
+- `security-review` — End-to-end security governance and review for Symfony applications.
+
+### Performance Nucleus
+- `performance-profiling` — Performance profiling and diagnosis (Symfony Profiler, P95 latency, memory footprints, flamegraphs).
+- `symfony-optimization` — Symfony framework optimization (DI Container, private services, asynchronous Messenger, HTTP Cache).
+- `database-performance` — Database and Doctrine optimization (N+1 query elimination, Fetch Joins, DTO projections, indexes, EXPLAIN).
+- `php-optimization` — PHP runtime optimization (Big-O complexity, Generators, streaming, OPcache preloading, memory).
+
+---
+
+## Agents (20 Engineering Specialists)
+
+### Core Engineering & Architecture
+- `orchestrator` — Engineering Orchestrator: Classify requests, coordinate specialists, and ensure evidence-based delivery.
+- `project-analyst` — Project Analyst: Non-destructively map repository, versions, bundles, architecture, and technical risks.
+- `project-bootstrapper` — Project Bootstrapper: Initialize official Symfony projects from scratch with clean, testable foundations.
+- `symfony-architect` — Symfony Architect: Define architectural boundaries, modularization, interfaces, and documented ADRs.
+- `symfony-backend-developer` — Symfony Backend Developer: Implement controllers, DTOs, services, commands, and domain logic.
+- `database-engineer` — Database & Doctrine Engineer: Model entities, relationships, repositories, and reversible migrations.
+- `quality-engineer` — Quality Engineer: Design and execute automated test suites (unit, integration, functional) and static analysis.
+- `integration-specialist` — Integration Specialist: Integrate external APIs, resilient HTTP clients, SDKs, and secure webhooks.
+- `debugger` — Debugger Specialist: Investigate root causes and ensure bug fixes are locked with regression tests.
+- `refactoring-specialist` — Refactoring Specialist: Modernize legacy code to PHP 8.2+ and eliminate technical debt safely.
+- `code-reviewer` — Code Reviewer: Independently review code diffs against bugs, security vulnerabilities, and quality standards.
+- `technical-writer` — Technical Writer: Produce reproducible, accurate documentation reflecting actual code state.
+
+### Security Nucleus
+- `security-engineer` — Security Engineer: Threat modeling (STRIDE), security architecture governance, and cryptographic policies.
+- `symfony-security-specialist` — Symfony Security Specialist: Configure Firewalls, Authenticators, granular Voters, CSRF, and RateLimiter.
+- `php-security-specialist` — PHP Security Specialist: Guard against OWASP vulnerabilities (SQLi, XSS, SSRF, Command Injection, Path Traversal).
+- `application-security-auditor` — Application Security Auditor: Audit endpoints, verify IDOR/BOLA, and generate CVSS risk reports.
+
+### Performance Nucleus
+- `performance-engineer` — Performance Engineer: Holistic profiling, CPU/memory bottleneck identification, and performance budgets.
+- `symfony-performance-specialist` — Symfony Performance Specialist: Optimize DI container compilation, EventDispatcher, Messenger, and Cache.
+- `database-performance-specialist` — Database Performance Specialist: Optimize SQL queries, eliminate N+1 queries, indexes, and EXPLAIN plans.
+- `php-performance-specialist` — PHP Performance Specialist: Optimize Big-O algorithms, data structures, streams, and Generators.
+
+---
+
+## CI/CD Validation Gate Templates
+
+- `templates/ci/github/symfony-ci.yml` — GitHub Actions workflow for Pull Requests: lint, security audit, PHPStan (level 8+), PostgreSQL service, and PHPUnit matrix (PHP 8.2 & 8.3).
+- `templates/ci/gitlab/.gitlab-ci.yml` — GitLab CI/CD pipeline template with stages: validate, analyze, security, and test.
+- `docs/CI_CD_GATES.md` — Comprehensive implementation guide and branch protection instructions.
+
+---
+
+## Automated Profiler & Benchmark Templates
+
+- `templates/benchmarks/SymfonyProfilerBenchmarkTrait.php` — Reusable trait for `WebTestCase` functional tests asserting latency budgets, peak memory, and zero N+1 duplicate queries.
+- `templates/benchmarks/benchmark-runner.php` — Standalone CLI benchmark runner generating P50/P95 latency percentiles, memory metrics, and Markdown reports.
+- `templates/benchmarks/benchmark.json.dist` — Endpoint benchmark target configuration and performance budget definitions.
+- `docs/PROFILER_BENCHMARKS.md` — Automated profiling and benchmark manual.
+
+---
+
+## OpenAPI & Swagger Contract Testing Templates
+
+- `templates/contracts/OpenApiContractTestTrait.php` — Reusable trait for `WebTestCase` asserting response status codes, headers, and JSON body schemas against OpenAPI 3.0 / 3.1 specifications.
+- `templates/contracts/openapi-validator.php` — Standalone CLI validator verifying OpenAPI syntax, broken `$ref` pointers, RFC 7807 Problem Details compliance, and Symfony router coverage.
+- `templates/contracts/openapi.yaml.dist` — Reference OpenAPI 3.1 contract specification in YAML format with strict typing and Problem Details error responses.
+- `templates/contracts/openapi.json.dist` — Reference OpenAPI 3.1 contract specification in native JSON format.
+- `docs/OPENAPI_CONTRACT_TESTING.md` — Comprehensive OpenAPI contract testing and schema regression manual.
