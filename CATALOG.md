@@ -129,3 +129,21 @@
 - `templates/docker/docker-validator.php` — Standalone CLI validator auditing multi-stage targets, non-root user directives, healthchecks, Compose dependencies, and security headers.
 - `workflows/containerization-deployment.md` — 5-phase operational workflow coordinating container architecture selection, worker tuning, security hardening, and deployment signoff.
 - `docs/DOCKER_CONTAINERIZATION.md` — Comprehensive manual for FrankenPHP containerization, worker mode tuning, and production orchestration.
+
+---
+
+## Kubernetes Helm & GitOps Orchestration Templates
+
+- `templates/kubernetes/helm/symfony-app/` — Production-grade cloud-native Helm chart for Symfony 6.4/7+ applications.
+- `templates/kubernetes/helm/symfony-app/Chart.yaml` — Official Helm v2 metadata with semantic versioning.
+- `templates/kubernetes/helm/symfony-app/values.yaml` — Production values defining replica quotas, resources, HPA thresholds, security contexts, probes, and worker parameters.
+- `templates/kubernetes/helm/symfony-app/templates/deployment-web.yaml` — Zero-downtime rolling update deployment for the web application (`maxUnavailable: 0`).
+- `templates/kubernetes/helm/symfony-app/templates/deployment-worker.yaml` — Dedicated deployment for asynchronous Symfony Messenger background workers.
+- `templates/kubernetes/helm/symfony-app/templates/hpa.yaml` — Native `autoscaling/v2` Horizontal Pod Autoscaler for web and worker workloads.
+- `templates/kubernetes/helm/symfony-app/templates/pdb.yaml` — `policy/v1` PodDisruptionBudget ensuring high availability (`minAvailable: 1`).
+- `templates/kubernetes/helm/symfony-app/templates/job-migration.yaml` — Pre-upgrade/post-install database migration Job with Helm hook annotations.
+- `templates/kubernetes/gitops/argocd-application.yaml.dist` — Production-ready ArgoCD Application manifest with automated prune and self-heal sync policies.
+- `templates/kubernetes/gitops/flux-kustomization.yaml.dist` — Flux CD GitRepository and HelmRelease continuous delivery manifests.
+- `templates/kubernetes/k8s-validator.php` — Standalone CLI validator auditing Helm chart metadata, resource quotas, CIS non-root execution, HPA, and GitOps syntax.
+- `workflows/kubernetes-gitops-deployment.md` — 5-phase operational workflow coordinating cluster architecture, HPA calibration, GitOps delivery, and release signoff.
+- `docs/KUBERNETES_AND_GITOPS.md` — Comprehensive cloud-native manual for Kubernetes, Helm, HPA, and GitOps continuous delivery.

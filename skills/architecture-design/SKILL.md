@@ -135,6 +135,11 @@ final readonly class ChargeCustomerUseCase
   ```bash
   php templates/architecture/architecture-validator.php --strict
   ```
+- Validate cloud-native Kubernetes Helm and GitOps architecture manifests:
+  ```bash
+  php templates/kubernetes/k8s-validator.php --strict
+  ```
+- Refer to `docs/KUBERNETES_AND_GITOPS.md` and `workflows/kubernetes-gitops-deployment.md` for production cloud deployment.
 
 ## 10. Error Handling and Exceptions
 - Domain exceptions must extend `\DomainException` and reflect business rule violations independent of HTTP.
